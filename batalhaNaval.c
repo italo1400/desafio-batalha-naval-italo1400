@@ -40,12 +40,26 @@ int main()
     int tabulereiro[10][10];
     int coordNavioHorizontal[2] = {5, 3};
     int coordNavioVertical[2] = {2, 3};
+    int coordNavioDiagonalA[2] = {8, 8};
+    int coordNavioDiagonalB[2] = {1, 4};
     char colunas[10] = "ABCDEFGHIJ";
 
     // valida posição do navio
     if (coordNavioHorizontal[1] + 2 > 10 || coordNavioHorizontal[1] - 2 < 0)
     {
         printf("\nPosição do navio ultrapssou limites horizontais\n");
+        return 0;
+    }
+
+    if (coordNavioVertical[0] + 2 > 10 || coordNavioVertical[0] - 2 < 0)
+    {
+        printf("\nPosição do navio ultrapssou limites verticais\n");
+        return 0;
+    }
+
+    if (coordNavioDiagonalA[0] + 2 > 10 && coordNavioDiagonalA[1] + 2 > 0)
+    {
+        printf("\nPosição do navio ultrapssou limites\n");
         return 0;
     }
 
@@ -59,13 +73,21 @@ int main()
                 printf("\nOs navios colidiram\n");
                 return 0;
             }
-        }
-    }
 
-    if (coordNavioVertical[0] + 2 > 10 || coordNavioVertical[0] - 2 < 0)
-    {
-        printf("\nPosição do navio ultrapssou limites verticais\n");
-        return 0;
+            if ((coordNavioDiagonalA[0] + i == coordNavioVertical[0] + j && coordNavioVertical[1] == coordNavioDiagonalA[1] + i) ||
+                (coordNavioDiagonalB[0] + i == coordNavioVertical[0] + j && coordNavioVertical[1] == coordNavioDiagonalB[1] + i))
+            {
+                printf("\nOs navios colidiram\n");
+                return 0;
+            }
+
+            if ((coordNavioDiagonalA[0] + i == coordNavioHorizontal[0] && coordNavioHorizontal[1] + j == coordNavioDiagonalA[1] + i) ||
+                (coordNavioDiagonalB[0] + i == coordNavioHorizontal[0] && coordNavioHorizontal[1] + j == coordNavioDiagonalB[1] + i))
+            {
+                printf("\nOs navios colidiram\n");
+                return 0;
+            }
+        }
     }
 
     // popular tabulereiro
@@ -82,6 +104,8 @@ int main()
     {
         tabulereiro[coordNavioHorizontal[0] - 1][(coordNavioHorizontal[1] - 1) + i] = 1;
         tabulereiro[(coordNavioVertical[0] - 1) + i][coordNavioVertical[1] - 1] = 1;
+        tabulereiro[(coordNavioDiagonalA[0] - 1) + i][(coordNavioDiagonalA[1] - 1) + i] = 3;
+        tabulereiro[(coordNavioDiagonalB[0] - 1) + i][(coordNavioDiagonalB[1] - 1) + i] = 3;
     }
 
     // monta colunas
