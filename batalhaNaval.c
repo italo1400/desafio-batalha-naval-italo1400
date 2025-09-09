@@ -3,6 +3,33 @@
 // Desafio Batalha Naval - MateCheck
 // Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
 // Siga os comentários para implementar cada parte do desafio.
+#define TAMANHO_FORMA 3
+#define LARGURA_FORMA 5
+
+void inicializaTabuleiro(int tabuleiro[10][10])
+{
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            tabuleiro[i][j] = 0;
+        }
+    }
+}
+
+void desenhaTabuleiro(int tabuleiro[10][10])
+{
+    printf("\n");
+    for (int i = 0; i < 10; i++)
+    {
+        printf("%2d ", i + 1); // alinhamento
+        for (int j = 0; j < 10; j++)
+        {
+            printf(" %d ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+}
 
 int main()
 {
@@ -37,12 +64,14 @@ int main()
     // 1 1 1 1 1
     // 0 0 1 0 0
 
-    int tabulereiro[10][10];
+    int tabuleiro[10][10];
     int coordNavioHorizontal[2] = {5, 3};
     int coordNavioVertical[2] = {2, 3};
     int coordNavioDiagonalA[2] = {8, 8};
     int coordNavioDiagonalB[2] = {1, 4};
     char colunas[10] = "ABCDEFGHIJ";
+
+    int tabuleiroB[10][10];
 
     // valida posição do navio
     if (coordNavioHorizontal[1] + 2 > 10 || coordNavioHorizontal[1] - 2 < 0)
@@ -90,41 +119,88 @@ int main()
         }
     }
 
-    // popular tabulereiro
-    for (int i = 0; i < 10; i++)
+    // popular tabuleiro
+    inicializaTabuleiro(tabuleiro);
+    inicializaTabuleiro(tabuleiroB);
+
+    // posiciona navios no tabuleiro
+    for (int i = 0; i < 3; i++)
     {
-        for (int j = 0; j < 10; j++)
+        tabuleiro[coordNavioHorizontal[0] - 1][(coordNavioHorizontal[1] - 1) + i] = 1;
+        tabuleiro[(coordNavioVertical[0] - 1) + i][coordNavioVertical[1] - 1] = 1;
+        tabuleiro[(coordNavioDiagonalA[0] - 1) + i][(coordNavioDiagonalA[1] - 1) + i] = 3;
+        tabuleiro[(coordNavioDiagonalB[0] - 1) + i][(coordNavioDiagonalB[1] - 1) + i] = 3;
+    }
+
+    // desenha cone
+    int coordCone[2] = {7, 1}; // posição inicial do cone (linha, coluna)
+    int meioCone = LARGURA_FORMA / 2;
+
+    for (int i = 0; i < TAMANHO_FORMA; i++)
+    {
+        for (int j = 0; j < LARGURA_FORMA; j++)
         {
-            tabulereiro[i][j] = 0;
+            if (j >= meioCone - i && j <= meioCone + i)
+                tabuleiroB[coordCone[0] + i][coordCone[1] + j] = 3;
         }
     }
 
-    // posiciona navios no tabulereiro
-    for (int i = 0; i < 3; i++)
+    // desenha cruz
+    int coordCruz[2] = {1, 1};
+
+    int meioLinhaCruz = TAMANHO_FORMA / 2;
+    int meioColunaCruz = LARGURA_FORMA / 2;
+
+    for (int i = 0; i < TAMANHO_FORMA; i++)
     {
-        tabulereiro[coordNavioHorizontal[0] - 1][(coordNavioHorizontal[1] - 1) + i] = 1;
-        tabulereiro[(coordNavioVertical[0] - 1) + i][coordNavioVertical[1] - 1] = 1;
-        tabulereiro[(coordNavioDiagonalA[0] - 1) + i][(coordNavioDiagonalA[1] - 1) + i] = 3;
-        tabulereiro[(coordNavioDiagonalB[0] - 1) + i][(coordNavioDiagonalB[1] - 1) + i] = 3;
+        for (int j = 0; j < LARGURA_FORMA; j++)
+        {
+            if (i == meioLinhaCruz || j == meioColunaCruz)
+                tabuleiroB[coordCruz[0] + i][coordCruz[1] + j] = 3;
+        }
     }
 
-    // monta colunas
+    // desenha octaedro
+    int coordOctaedro[2] = {4, 5};
+    int altura = 3;
+    int largura = 5;
+
+    int meioLinhaOctaedro = altura / 2;
+    int meioColunaOctaedro = largura / 2;
+
+    for (int i = 0; i < altura; i++)
+    {
+        int alcance;
+        if (i <= meioLinhaOctaedro)
+            alcance = i;
+        else
+            alcance = altura - 1 - i;
+
+        for (int j = 0; j < largura; j++)
+        {
+            if (j >= meioColunaOctaedro - alcance && j <= meioColunaOctaedro + alcance)
+                tabuleiroB[coordOctaedro[0] + i][coordOctaedro[1] + j] = 3;
+        }
+    }
+
+    // navios
     printf("   ");
     for (int i = 0; i < 10; i++)
     {
         printf(" %c ", colunas[i]);
     }
 
-    printf("\n");
+    desenhaTabuleiro(tabuleiro);
+    printf("\n\n");
+
+    // formas
+    printf("   ");
     for (int i = 0; i < 10; i++)
     {
-        printf("%2d ", i + 1); // alinhamento
-        for (int j = 0; j < 10; j++)
-        {
-            printf(" %d ", tabulereiro[i][j]);
-        }
-        printf("\n");
+        printf(" %c ", colunas[i]);
     }
 
+    desenhaTabuleiro(tabuleiroB);
+    printf("\n\n");
     return 0;
 }
